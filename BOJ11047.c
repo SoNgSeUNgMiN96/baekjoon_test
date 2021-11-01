@@ -10,11 +10,11 @@ int main(){
 
     coin = (int*)malloc(sizeof(int)*N);
 
-    for (int i=N-1;i>=0;i--){   //오름차수능로 들어오는 화폐를 역으로 넣어준다.
+    for (int i=N-1;i>=0;i--){   //오름차순으로 들어오는 화폐를 역으로 넣어준다.
         scanf("%d",&coin[i]);
     }
 
-    for (int i=0;i<N;i++){
+    for (int i=0;i<N&&K>0;i++){
         if (coin[i]<=K){
             divtemp = K/coin[i];
             K-=coin[i]*divtemp;
@@ -23,4 +23,4 @@ int main(){
     }
 
     printf("%d",minimum);
-}
+}                                                                           
