@@ -47,53 +47,6 @@ void addKeySet(int key);
 void addStringKeySet(char *stringKey);
 
 
-int main(){
-
-    int N, M, *answer;
-    char temp[21];
-    char *input;
-    scanf("%d",&N);
-    answer = (int*)malloc(sizeof(int)*N);
-
-    for( int i=0;i<N;i++){
-        hashTable = (struct bucket *)malloc(BUCKET_SIZE * sizeof(struct bucket));
-        scanf("%d",&M);
-        answer[i] = 1;
-        for (int j=0;j<M;j++){
-            scanf("%s",temp);
-            scanf("%s",temp);
-            if (hasStringKey(temp)){
-                addHashMapString(temp,hashValueString(temp)+1);
-            }
-            else{
-                addHashMapString(temp,1);
-            }
-        }
-        stringKeySet *cursor = stringKeySetHead;
-        while (cursor!=NULL)
-        {
-            answer[i] *= (hashValueString(cursor->stringKey)+1);
-            cursor= cursor->next;
-        }
-
-    }
-    for(int i=0;i<N;i++){
-        printf("%d\n",answer[i]);
-    }
-
-    
-
-    //addHashMapString("hashtest",78);
-    //addHashMapString("alice",124);
-
-
-
-    //printf("hash hashtest = %d  index = %d\n", hashValueString("hashtest") , hashFunction(getStringKey("hashtest")));
-    //printf("hash alice = %d idx = %d\n", hashValueString("alice"), hashFunction(getStringKey("alice")));
-}
-
-
-
 
 int hashFunction(long long key){
     long double a;
@@ -108,9 +61,11 @@ int hashFunction(long long key){
         a = key / 32767.0;
     }
     
-    a *= 1000000;
+    a *= 1000;
     long temp = a;
     int idx = temp%1000;
+    if(idx <0)
+        return -idx;
     return idx;
 }
 
@@ -159,7 +114,7 @@ void addHashMap(long long key, int value){
     }
     // 버켓에 다른 노드가 있을 경우 한칸씩 밀고 내가 헤드가 된다(실제로는 포인터만 바꿔줌)
     else{
-        node * cursor;
+        node * cursor = hashTable->head;
         while (cursor)
         {
            if(cursor->key==key){        //이미 데이터가 있는경우 데이터를 뭉갬
@@ -182,21 +137,22 @@ void addHashMapString(char *stringKey, int value){
     // 새로 노드 생성
     node* newNode = createNodeString(stringKey, value);
     // 계산한 인덱스의 버켓에 아무 노드도 없을 경우
-    if (hashTable[hashIndex].count == 0){
+    if (hashTable[hashIndex].count==0){
         addStringKeySet(stringKey);
         hashTable[hashIndex].count = 1;
         hashTable[hashIndex].head = newNode; // head를 교체
     }
     // 버켓에 다른 노드가 있을 경우 한칸씩 밀고 내가 헤드가 된다(실제로는 포인터만 바꿔줌)
     else{
-        node * cursor;
-        while (cursor)
+        node * cursor = hashTable[hashIndex].head;
+        while (cursor!=NULL)
         {
-           if(strcpm(cursor->stringKey,stringKey)==0){        //이미 데이터가 있는경우 데이터를 뭉갬
+           if(strcmp(cursor->stringKey,stringKey)==0){        //이미 데이터가 있는경우 데이터를 뭉갬
                 cursor->value = value;
                 return;
            }
            else cursor = cursor->next;
+           
         }
         addStringKeySet(stringKey);
         newNode->next = hashTable[hashIndex].head;
@@ -313,12 +269,12 @@ void addStringKeySet(char *stringKey){
     stringKeySet *temp =(stringKeySet*)malloc(sizeof(stringKeySet));
     strcpy(temp->stringKey,stringKey);
     temp->next = NULL;
-    if (keySetHead==NULL){
-        keySetHead = temp;
-        keySetTail = temp;
+    if (stringKeySetHead==NULL){
+        stringKeySetHead = temp;
+        stringKeySetTail = temp;
     }
     else{
-        keySetTail->next = temp;
-        keySetTail = temp;
+        stringKeySetTail->next = temp;
+        stringKeySetTail = temp;
     }
 }
