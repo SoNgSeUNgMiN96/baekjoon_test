@@ -5,7 +5,6 @@
 bool isgood(int *arr,int count, int N){
     int *temp;
     bool notgood = true;
-    bool success = true;
 
     for (int i = 1; i <= count/2; i++)      //i 는 뽑을 갯수
     {   
@@ -15,14 +14,11 @@ bool isgood(int *arr,int count, int N){
             for (int k = j; k < j+i; k++)   //그 위치부터 i개를 뽑아 저장.
             {
                 temp[k-j] = arr[k];     //비교할 문자열 저장
-        
             }
             notgood = true;
-
+// 0 1 2 1
             for (int k=j+i;k<j+i+i;k++){        //뽑은 수열 다음구간에서, i개만큼 일치하는지 확인
-                if(temp[k-i-j]==arr[k]){        //계속해서 일치한다면 true유지
-                   
-                }else{      //한번이라도 달라진다면 false
+                if(temp[k-i-j]!=arr[k]){        //계속해서 일치한다면 true유지
                     notgood = false;
                     break;
                 }
@@ -34,7 +30,6 @@ bool isgood(int *arr,int count, int N){
         
     }
     return true;
-    
 }
 
 void good(int N,int count,int *arr, int before){
@@ -51,14 +46,11 @@ void good(int N,int count,int *arr, int before){
     {
         if(i==before)
             continue;
-        
         arr[count] = i;
-
         if (isgood(arr,count+1,N)){
             good(N,count+1,arr,i);
         }
     }
-    
 }
 
 int main(){
